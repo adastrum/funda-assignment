@@ -21,3 +21,8 @@ public record GetObjectsForSaleResponse(ObjectForSale[] Objects, Paging Paging, 
 public record ObjectForSale(string Id, int MakelaarId, string MakelaarNaam);
 
 public record Paging(int AantalPaginas, int HuidigePagina);
+
+public class PartnerApiOptions
+{
+    public string ApiKey { get; set; }
+}

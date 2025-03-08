@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using FluentAssertions;
-using Microsoft.AspNetCore.Mvc.Testing;
 
 namespace Assignment.Api.Tests;
 
@@ -20,8 +19,4 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
 
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
-}
-
-public class CustomWebApplicationFactory : WebApplicationFactory<Program>
-{
 }
