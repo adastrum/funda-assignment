@@ -25,4 +25,6 @@ public record Paging(int AantalPaginas, int HuidigePagina);
 public class PartnerApiOptions
 {
     public string ApiKey { get; set; }
+    
+    public int PageSize { get; set; }
 }
