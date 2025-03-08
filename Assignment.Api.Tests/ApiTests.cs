@@ -32,11 +32,12 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
 
-    [Fact]
-    public async Task Update_statistics()
+    [Theory]
+    [InlineData("/amsterdam/")]
+    [InlineData("/amsterdam/tuin/")]
+    public async Task Get_top_makelaars(string query)
     {
         // Arrange
-        const string query = "/amsterdam/";
         const int pageSize = 5;
         const int top = 10;
         const int updateStatisticsDelayInSeconds = 1;
@@ -66,7 +67,7 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
         await Task.Delay(TimeSpan.FromSeconds(updateStatisticsDelayInSeconds));
 
         // Assert
-        var getStatisticsResponse = await _client.GetAsync($"/api/statistics/amsterdam?top={top}");
+        var getStatisticsResponse = await _client.GetAsync($"/api/statistics{query}?top={top}");
         getStatisticsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var getStatisticsResponseAsString = await getStatisticsResponse.Content.ReadAsStringAsync();
         var topAgentsResponse = JsonConvert.DeserializeObject<TopAgentsResponse>(getStatisticsResponseAsString);

@@ -5,7 +5,6 @@ namespace Assignment.Api.Features.Statistics;
 public class StatisticsBackgroundService : BackgroundService
 {
     private readonly IServiceScopeFactory _serviceScopeFactory;
-    private readonly StatisticsService _statisticsService;
 
     private readonly ILogger<StatisticsBackgroundService> _logger;
 
@@ -13,11 +12,10 @@ public class StatisticsBackgroundService : BackgroundService
     private readonly PeriodicTimer _updateStatisticsTimer;
 
     public StatisticsBackgroundService(IOptions<StatisticsOptions> options, IServiceScopeFactory serviceScopeFactory,
-        StatisticsService statisticsService, ILogger<StatisticsBackgroundService> logger)
+        ILogger<StatisticsBackgroundService> logger)
     {
         _options = options.Value;
         _serviceScopeFactory = serviceScopeFactory;
-        _statisticsService = statisticsService;
         _logger = logger;
         _updateStatisticsTimer = new PeriodicTimer(TimeSpan.FromSeconds(_options.UpdateIntervalInSeconds));
     }

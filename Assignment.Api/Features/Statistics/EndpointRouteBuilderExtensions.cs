@@ -6,14 +6,6 @@ public static class EndpointRouteBuilderExtensions
     {
         var group = app.MapGroup("/api/statistics");
 
-        group.MapPost("/update",
-            async (StatisticsService statisticsService, CancellationToken cancellationToken) =>
-            {
-                await statisticsService.UpdateStatistics(cancellationToken);
-
-                return Results.Ok();
-            });
-
         group.MapGet("/amsterdam", async (StatisticsStore statisticsStore, int top = 10) =>
         {
             var result = await statisticsStore.GetStatistics(CacheKeys.TopAmsterdam, top);
@@ -23,7 +15,7 @@ public static class EndpointRouteBuilderExtensions
                 : Results.NoContent();
         });
 
-        group.MapGet("/amsterdam/garden", async (StatisticsStore statisticsStore, int top = 10) =>
+        group.MapGet("/amsterdam/tuin", async (StatisticsStore statisticsStore, int top = 10) =>
         {
             var result = await statisticsStore.GetStatistics(CacheKeys.TopAmsterdamWithGarden, top);
 

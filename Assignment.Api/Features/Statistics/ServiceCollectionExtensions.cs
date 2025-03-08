@@ -11,6 +11,8 @@ public static class ServiceCollectionExtensions
 
         services.Configure<StatisticsOptions>(configuration.GetSection("Statistics"));
 
+        services.AddHostedService<StatisticsBackgroundService>();
+
         return services;
     }
 }
