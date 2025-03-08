@@ -1,3 +1,4 @@
+using Assignment.Api.Features.Statistics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using WireMock.Server;
@@ -17,6 +18,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
         builder.UseSetting("PartnerApi:ApiKey", PartnerApiKey);
         builder.UseSetting("PartnerApi:BaseUrl", $"http://localhost:{PartnerApiPort}");
         builder.UseSetting("PartnerApi:PageSize", PageSize.ToString());
+
+        builder.ConfigureServices(services =>
+        {
+            var descriptor = services.SingleOrDefault(x => x.ServiceType == typeof(StatisticsBackgroundService));
+            if (descriptor is not null)
+            {
+                services.Remove(descriptor);
+            }
+        });
     }
 
     public async Task InitializeAsync()

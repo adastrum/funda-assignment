@@ -2,6 +2,7 @@
 using Assignment.Api.Features.Shared.Clients;
 using Assignment.Api.Features.Statistics;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using WireMock.RequestBuilders;
 using WireMock.ResponseBuilders;
@@ -11,11 +12,13 @@ namespace Assignment.Api.Tests;
 
 public class ApiTests : IClassFixture<CustomWebApplicationFactory>
 {
+    private readonly IServiceProvider _serviceProvider;
     private readonly WireMockServer _partnerApiStub;
     private readonly HttpClient _client;
 
     public ApiTests(CustomWebApplicationFactory factory)
     {
+        _serviceProvider = factory.Services;
         _partnerApiStub = factory.PartnerApiStub;
         _partnerApiStub.Reset();
         _client = factory.CreateClient();
@@ -37,7 +40,7 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
         const int pageSize = 5;
         const int top = 10;
         const int updateStatisticsDelayInSeconds = 1;
-        
+
         SetupStub(_partnerApiStub, query, 1, pageSize, null, "page 2 401",
             MakeGetObjectsForSaleResponse(2, 1, 6,
                 ("1", 1000),
@@ -53,10 +56,12 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
             MakeGetObjectsForSaleResponse(2, 2, 6,
                 ("6", 1002)));
 
+        await using var scope = _serviceProvider.CreateAsyncScope();
+
+        var sut = scope.ServiceProvider.GetRequiredService<StatisticsService>();
+
         // Act
-        var updateStatisticsResponse =
-            await _client.PostAsync("/api/statistics/update", new StringContent(string.Empty));
-        updateStatisticsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        await sut.UpdateStatistics(CancellationToken.None);
 
         await Task.Delay(TimeSpan.FromSeconds(updateStatisticsDelayInSeconds));
 
