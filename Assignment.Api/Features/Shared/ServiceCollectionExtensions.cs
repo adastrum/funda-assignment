@@ -17,6 +17,8 @@ public static class ServiceCollectionExtensions
 
         services.Configure<PartnerApiOptions>(configuration.GetSection("PartnerApi"));
 
+        services.AddMemoryCache();
+
         return services;
     }
 

@@ -7,6 +7,9 @@ public static class ServiceCollectionExtensions
     {
         services.AddScoped<StatisticsService>();
         services.AddScoped<ObjectsForSaleDataProvider>();
+        services.AddScoped<StatisticsStore>();
+
+        services.Configure<StatisticsOptions>(configuration.GetSection("Statistics"));
 
         return services;
     }

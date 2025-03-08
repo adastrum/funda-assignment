@@ -14,6 +14,24 @@ public static class EndpointRouteBuilderExtensions
                 return Results.Ok();
             });
 
+        group.MapGet("/amsterdam", async (StatisticsStore statisticsStore, int top = 10) =>
+        {
+            var result = await statisticsStore.GetStatistics(CacheKeys.TopAmsterdam, top);
+
+            return result.TopAgents.Length != 0
+                ? Results.Ok(result)
+                : Results.NoContent();
+        });
+
+        group.MapGet("/amsterdam/garden", async (StatisticsStore statisticsStore, int top = 10) =>
+        {
+            var result = await statisticsStore.GetStatistics(CacheKeys.TopAmsterdamWithGarden, top);
+
+            return result.TopAgents.Length != 0
+                ? Results.Ok(result)
+                : Results.NoContent();
+        });
+
         return app;
     }
 }

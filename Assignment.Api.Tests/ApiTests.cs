@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Assignment.Api.Features.Shared.Clients;
+using Assignment.Api.Features.Statistics;
 using FluentAssertions;
 using Newtonsoft.Json;
 using WireMock.RequestBuilders;
@@ -34,7 +35,9 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
         // Arrange
         const string query = "/amsterdam/";
         const int pageSize = 5;
-
+        const int top = 10;
+        const int updateStatisticsDelayInSeconds = 1;
+        
         SetupStub(_partnerApiStub, query, 1, pageSize, null, "page 2 401",
             MakeGetObjectsForSaleResponse(2, 1, 6,
                 ("1", 1000),
@@ -51,10 +54,25 @@ public class ApiTests : IClassFixture<CustomWebApplicationFactory>
                 ("6", 1002)));
 
         // Act
-        var response = await _client.PostAsync("/api/statistics/update", new StringContent(string.Empty));
+        var updateStatisticsResponse =
+            await _client.PostAsync("/api/statistics/update", new StringContent(string.Empty));
+        updateStatisticsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+
+        await Task.Delay(TimeSpan.FromSeconds(updateStatisticsDelayInSeconds));
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getStatisticsResponse = await _client.GetAsync($"/api/statistics/amsterdam?top={top}");
+        getStatisticsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getStatisticsResponseAsString = await getStatisticsResponse.Content.ReadAsStringAsync();
+        var topAgentsResponse = JsonConvert.DeserializeObject<TopAgentsResponse>(getStatisticsResponseAsString);
+        topAgentsResponse.Should().NotBeNull();
+        topAgentsResponse.TopAgents.Should().BeEquivalentTo(
+            new[]
+            {
+                new ObjectsPerAgent(1000, "Makelaar 1000", 3),
+                new ObjectsPerAgent(1001, "Makelaar 1001", 2),
+                new ObjectsPerAgent(1002, "Makelaar 1002", 1)
+            });
     }
 
     private static IRespondWithAProvider SetupStub<TResponse>(WireMockServer stub, string query, int page, int pagesize,
