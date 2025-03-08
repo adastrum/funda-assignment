@@ -24,7 +24,7 @@ public static class ServiceCollectionExtensions
     {
         const int retryCount = 5;
         const int baseDelayInSeconds = 2;
-        
+
         return HttpPolicyExtensions
             .HandleTransientHttpError()
             // while it should be HTTP 429 Too Many Requests, it's not implemented in the Partner API

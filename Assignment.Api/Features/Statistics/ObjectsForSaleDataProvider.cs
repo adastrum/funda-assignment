@@ -45,13 +45,13 @@ public class ObjectsForSaleDataProvider
                 yield break;
             }
 
+            yield return response.Objects;
+
             var hasMorePages = response.Paging.HuidigePagina < response.Paging.AantalPaginas;
             if (!hasMorePages)
             {
                 yield break;
             }
-
-            yield return response.Objects;
 
             queryParams = queryParams with { Page = queryParams.Page + 1 };
         }
