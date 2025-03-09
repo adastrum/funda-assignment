@@ -50,6 +50,7 @@ cd Assignment.Api
 dotnet run --launch-profile https
 ```
 Go to https://localhost:5001/scalar
+> There is an open [issue](https://github.com/scalar/scalar/issues/4916) with the Scalar UI where the response body is sometimes missing. In case Scalar UI shows no body for HTTP 200 responses, please refresh your browser.
 
 ### Available Endpoints
 - `GET /api/statistics/amsterdam/` - Top agents in Amsterdam
