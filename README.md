@@ -32,6 +32,13 @@ The codebase follows these principles:
 - **StatisticsService**: The main "handler" class
 - **StatisticsStore**: Caches aggregated data for different queries
 
+## 🔍 Technical Details
+
+- Uses memory cache for simplicity
+- Background service updates statistics periodically
+- Endpoints return HTTP 204 (No Content) until background service completes first data fetch
+- Handles API rate limiting through retries
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -55,13 +62,6 @@ The solution uses integration tests with WireMock to simulate the partner API:
 - Tests real HTTP requests to API endpoints
 - Simulates rate limiting and error scenarios
 - Verifies correct aggregation of results
-
-## 🔍 Technical Details
-
-- Uses memory cache for simplicity
-- Background service updates statistics periodically
-- Endpoints return HTTP 204 (No Content) until background service completes first data fetch
-- Handles API rate limiting through retries
 
 ## 🔮 Future Enhancements
 
